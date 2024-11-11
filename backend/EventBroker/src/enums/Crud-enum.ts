@@ -1,7 +1,7 @@
 
 export enum  CrudEnum {
-    CREATE = "CREATE",
-    READ ='READ',
-    UPDATE = 'UPDATE',
-    DELETE = 'DELETE'
+    CREATETASK= "CREATETASK",
+    READALL = 'READALL',
+    DELETETASK= 'DELETETASK',
+    DELETEALL= 'DELETEALL'
 }

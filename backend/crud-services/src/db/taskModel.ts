@@ -15,6 +15,10 @@ export class Tarea {
     @Column({ type: 'varchar' }) // Definido explícitamente como 'varchar'
     estado!: string;
 
+    @Column({ type: 'varchar' }) // Definido explícitamente como 'text' y opcional
+    userproperty!: string;
     @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' }) // Cambiado de 'timestamp' a 'datetime'
     fechaCreacion!: Date;
+
+
 }

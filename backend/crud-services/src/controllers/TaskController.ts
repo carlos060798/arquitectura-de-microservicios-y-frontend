@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { Tarea } from '../db/taskModel';
 import { AppDataSource } from '../db/connection';
+import { console } from 'inspector';
 
 class TaskController {
     private static tareaRepository: Repository<Tarea>;
@@ -19,8 +20,11 @@ class TaskController {
     }
 
     public static async getAllTasks(req: Request, res: Response) {
+        const  {userproperty} = req.params
+        console.log(userproperty)
+
         try {
-            const tasks = await TaskController.getRepository().find();
+            const tasks = await TaskController.getRepository().find({where: {userproperty}});
 
             if (!tasks || tasks.length === 0) {
                 return res.status(404).send({ msg: 'No hay tareas en la base de datos' });
@@ -36,31 +40,17 @@ class TaskController {
         }
     }
 
-    public static async getTaskById(req: Request, res: Response) {
-        const { id } = req.params;
-        try {
-            const task = await TaskController.getRepository().findOneBy({ id: parseInt(id) });
 
-            if (!task) {
-                return res.status(404).send({ msg: 'No se encontró la tarea con el ID proporcionado' });
-            }
-
-            return res.send({
-                msg: 'Get task by id',
-                task,
-            });
-        } catch (err) {
-            console.error(err);
-            return res.status(500).send({ msg: 'Error al obtener la tarea', err });
-        }
-    }
+    
+    
 
     public static async createTask(req: Request, res: Response) {
-        const { nombre, descripcion, estado } = req.body;
+        const { nombre, descripcion, estado, userproperty} = req.body;
         const task = TaskController.getRepository().create({
             nombre,
             descripcion,
             estado,
+            userproperty,
         });
 
         try {
@@ -75,60 +65,35 @@ class TaskController {
         }
     }
 
-    public static async updateTask(req: Request, res: Response) {
-        const { id } = req.params;
-        const { nombre, descripcion, estado } = req.body;
-
-        try {
-            const task = await TaskController.getRepository().findOneBy({ id: parseInt(id) });
-
-            if (!task) {
-                return res.status(404).send({ msg: 'No se encontró la tarea con el ID proporcionado' });
-            }
-
-            task.nombre = nombre || task.nombre;
-            task.descripcion = descripcion || task.descripcion;
-            task.estado = estado || task.estado;
-
-            await TaskController.getRepository().save(task);
-            return res.send({
-                msg: 'Task updated',
-                task,
-            });
-        } catch (err) {
-            console.error(err);
-            return res.status(500).send({ msg: 'Error al actualizar la tarea', err });
-        }
-    }
-
+   
     public static async deleteTask(req: Request, res: Response) {
         const { id } = req.params;
-
+    
         try {
+            // Intentamos eliminar la tarea con el ID proporcionado
             const result = await TaskController.getRepository().delete(id);
-
+    
+            // Verificamos si la tarea existía y fue eliminada
             if (result.affected === 0) {
-                return res.status(404).send({ msg: 'No se encontró la tarea con el ID proporcionado' });
+                return res.status(404).send({ msg: 'Tarea no encontrada' });
             }
-
+    
+            // Si la tarea fue eliminada con éxito, enviamos la respuesta
             return res.send({
-                msg: 'Task deleted',
+                msg: 'Task deleted successfully',
+                result,
             });
         } catch (err) {
             console.error(err);
             return res.status(500).send({ msg: 'Error al eliminar la tarea', err });
         }
     }
+    
 
-    public static async deleteAllTasks(req: Request, res: Response) {
-        try {
-            await TaskController.getRepository().clear();
-            return res.send({ msg: 'All tasks deleted' });
-        } catch (err) {
-            console.error(err);
-            return res.status(500).send({ msg: 'Error al eliminar todas las tareas', err });
-        }
-    }
+   
+    
+
+    
 }
 
 export default TaskController;
