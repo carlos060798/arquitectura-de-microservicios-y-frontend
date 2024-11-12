@@ -1,0 +1,43 @@
+# Ignora el archivo de configuración de variables de entorno
+.env
+
+# Ignora credenciales específicas de servicios en cloud
+aws-credentials.json
+google-credentials.json
+serviceAccountKey.json
+
+# Ignora archivos de configuración de API claves o tokens
+*.pem
+*.key
+*.p12
+*.cer
+*.crt
+
+# Ignora archivos específicos de node_modules y dependencias
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Ignora archivos de logs y configuraciones locales
+*.log
+*.cache
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Ignora archivos de compilación y configuración del sistema operativo
+dist/
+build/
+*.lock
+tmp/
+out/
+
+# Ignora archivos específicos de sistema operativo
+Thumbs.db
+Desktop.ini
+
+# Ignora archivos de configuración de despliegue
+firebase-debug.log
